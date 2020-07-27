@@ -1,6 +1,9 @@
-name: Dart CI
+name: Flutter CI
 
-on: [push]
+on: 
+  push:
+    branches: 
+      - master
 
 jobs:
   build:
@@ -11,8 +14,23 @@ jobs:
       image:  google/dart:latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v1
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '12.x'
+    #Setup Flutter Environment
+    - uses: subosito/flutter-action@v1
+      with:
+        channel: 'stable' # 'dev', 'alpha', 'beta', default to: 'stable'
     - name: Install dependencies
       run: flutter pub get
-    - name: build
-      run: flutter run --release
+    - run: flutter format --set-exit-if-changed 
+    - run: flutter analyze
+    - name: build apk
+      run: flutter build apk --release
+    - uses: actions/upload-artifact@v1
+      with:
+        # Name of the command/step.
+        name: release-apk
+        # Path to the release apk.
+        path: build/app/outputs/apk/release/app-release.apk
