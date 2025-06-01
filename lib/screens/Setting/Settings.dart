@@ -10,7 +10,6 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  BuildContext _ctx;
   final baseUrlController = TextEditingController();
 
   @override
@@ -22,13 +21,12 @@ class _SettingState extends State<Setting> {
   void loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      baseUrlController.text = prefs.get("BaseUrl");
+      baseUrlController.text = prefs.getString("BaseUrl")!;
     });
     print("From Setting screen ${baseUrlController.text}");
   }
 
   Stack buildContent(BuildContext context) {
-    _ctx = context;
     return new Stack(fit: StackFit.expand, children: <Widget>[
       new Image(
         image: new AssetImage("assets/Logo.png"),
@@ -75,10 +73,10 @@ class _SettingState extends State<Setting> {
     // Navigator.of(_ctx).pushReplacement(
     //     MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
     if (isSaved)
-      Toast.show("Settings Saved !!!", _ctx,
-          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+      Toast.show("Settings Saved !!!",
+          duration: Toast.lengthShort, gravity: Toast.bottom);
     else
-      Toast.show("Settings not Saved !!!", _ctx,
-          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      Toast.show("Settings not Saved !!!",
+          duration: Toast.lengthLong, gravity: Toast.bottom);
   }
 }

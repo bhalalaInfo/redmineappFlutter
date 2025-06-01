@@ -1,28 +1,35 @@
 class Project {
-  String _identifier;
-  int _id;
-  String _name;
-  String _description;
-  int _status;
+  String identifier;
+  int id;
+  String name;
+  String description;
+  int status;
 
-  int get id => _id;
-  String get name => _name;
+  int get Id => id;
+  String get Name => name;
 
-  Project.fromJson(dynamic json) {
-    _id = json["id"];
-    _identifier = json["identifier"];
-    _name = json["name"];
-    _description = json["description"];
-    _status = json["status"];
-  }
+  Project(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.identifier,
+      required this.status});
+
+  factory Project.fromJson(dynamic json) => Project(
+        id: json["id"],
+        identifier: json["identifier"],
+        name: json["name"],
+        description: json["description"],
+        status: json["status"],
+      );
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
-    map["id"] = _id;
-    map["identifier"] = _identifier;
-    map["name"] = _name;
-    map["description"] = _description;
-    map["status"] = _status;
+    map["id"] = id;
+    map["identifier"] = identifier;
+    map["name"] = name;
+    map["description"] = description;
+    map["status"] = status;
 
     return map;
   }

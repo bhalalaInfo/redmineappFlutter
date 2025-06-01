@@ -1,5 +1,5 @@
 name: redmineapp
-description: A new Flutter project.
+description: Redmine time entry mobile app.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -11,10 +11,13 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.0+2
+
+module:
+  androidX: true
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -22,17 +25,16 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
-  shared_preferences: ^0.5.3+4
-  intl: ^0.16.0
-  http: ^0.12.0+2
-  toast: ^0.1.5
-  sqflite: ^1.1.6+5
-  path_provider: ^1.3.0
-  url_launcher: ^5.1.3
-  flutter_datetime_picker: ^1.2.6
-  flutter_launcher_icons: ^0.7.3
-  qr_reader: ^0.1.3
+  cupertino_icons: ^1.0.8
+  shared_preferences: ^2.5.3
+  intl: ^0.20.2
+  http: ^1.2.2
+  toast: ^0.3.0
+  sqflite: ^2.4.0
+  path_provider: ^2.1.5
+  url_launcher: ^6.3.1
+  flutter_launcher_icons: ^0.14.1
+#  flutter_qr_reader: ^1.0.5
   
 
 dev_dependencies:

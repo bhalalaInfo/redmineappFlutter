@@ -1,15 +1,15 @@
 
 class UserInfo {
-  String _login;
-  String _firstName;
-  String _lastName;
-  String _email;
-  String _password;
+  late String _login;
+  late String _firstName;
+  late String _lastName;
+  late String _email;
+  late String _password;
 
-  String get login => _login;
+  String get Login => _login;
 
-  String get firstName => _firstName;
-  String get lastName => _lastName;
+  String get FirstName => _firstName;
+  String get LastName => _lastName;
 
   String get email => _email;
 

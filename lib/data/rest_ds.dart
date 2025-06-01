@@ -9,7 +9,7 @@ import 'package:redmineapp/network/network.dart';
 
 class RestDataSource {
   Network _netUtil = new Network();
-  Future<UserInfo> login(String host, String userName, String password) async {
+  Future<UserInfo?> login(String host, String userName, String password) async {
     String basicAuth =
         'Basic ' + base64Encode(utf8.encode('$userName:$password'));
 
@@ -40,7 +40,7 @@ class RestDataSource {
         headers: <String, String>{
           'Authorization': basicAuth
         }).then((dynamic res) {
-      List<Project> projs = new List<Project>();
+      List<Project> projs = new List<Project>.empty();
       res['projects']
           .forEach((dynamic element) => projs.add(Project.fromJson(element)));
       return projs;
@@ -58,7 +58,7 @@ class RestDataSource {
         headers: <String, String>{
           'Authorization': basicAuth
         }).then((dynamic res) {
-      List<Issue> issues = new List<Issue>();
+      List<Issue> issues = new List<Issue>.empty();
       res['issues'].forEach((dynamic i) => issues.add(Issue.fromJson(i)));
       return issues;
     }).catchError((e) {
@@ -75,7 +75,7 @@ class RestDataSource {
         headers: <String, String>{
           'Authorization': basicAuth
         }).then((dynamic res) {
-      List<Activity> activities = new List<Activity>();
+      List<Activity> activities = new List<Activity>.empty();
       res['time_entry_activities']
           .forEach((dynamic i) => activities.add(Activity.fromJson(i)));
       return activities;

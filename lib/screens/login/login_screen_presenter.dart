@@ -16,8 +16,9 @@ class LoginScreenPresenter {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
 
-      var user = await api.login(pref.get("BaseUrl"), username, password);
-      _view.onLoginSuccess(user);
+      var user =
+          await api.login(pref.getString("BaseUrl") ?? "", username, password);
+      _view.onLoginSuccess(user!);
     } on Exception catch (error) {
       _view.onLoginError(error.toString());
     }

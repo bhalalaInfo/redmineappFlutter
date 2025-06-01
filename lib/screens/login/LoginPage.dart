@@ -15,17 +15,16 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin
     implements LoginScreenContract, AuthStateListener {
-  BuildContext _ctx;
   final _formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  AnimationController _iconAnimationController;
-  Animation<double> _iconAnimation;
+  late BuildContext _ctx;
+  late AnimationController _iconAnimationController;
+  late Animation<double> _iconAnimation;
+  late String _userName;
+  late String _password;
+  late LoginScreenPresenter _presenter;
   bool _isLoading = false;
-  String _userName;
-  String _password;
   bool _obscureText = true;
-
-  LoginScreenPresenter _presenter;
 
   _LoginPageState() {
     _presenter = new LoginScreenPresenter(this);
@@ -49,14 +48,14 @@ class _LoginPageState extends State<LoginPage>
   void _emailSupport() async {
     const url =
         "mailto:bhalalapj@gmail.com?subject=Hey, i have issue on Redmine App &body=Help Me on following issue. ";
-    if (await canLaunch(Uri.encodeFull(url))) await launch(Uri.encodeFull(url));
-    Toast.show("Email support", context,
-        duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+    if (await canLaunchUrl(Uri.parse(url))) await launchUrl(Uri.parse(url));
+    Toast.show("Email support",
+        duration: Toast.lengthShort, gravity: Toast.bottom);
   }
 
   void _loginPressed() {
     final form = _formKey.currentState;
-    if (form.validate()) {
+    if (form!.validate()) {
       form.save();
       setState(() => _isLoading = true);
       _presenter.doLogin(_userName, _password);
@@ -141,10 +140,10 @@ class _LoginPageState extends State<LoginPage>
                             labelText: "Username",
                           ),
                           keyboardType: TextInputType.text,
-                          validator: (value) => value.trim().isEmpty
+                          validator: (value) => value!.trim().isEmpty
                               ? 'Username can\'t empty'
                               : null,
-                          onSaved: (value) => _userName = value.trim(),
+                          onSaved: (value) => _userName = value!.trim(),
                         ),
                         new TextFormField(
                           obscureText: _obscureText,
@@ -161,10 +160,10 @@ class _LoginPageState extends State<LoginPage>
                                     : Icons.visibility),
                               )),
                           keyboardType: TextInputType.text,
-                          validator: (value) => value.trim().isEmpty
+                          validator: (value) => value!.trim().isEmpty
                               ? 'password can\'t empty'
                               : null,
-                          onSaved: (value) => _password = value.trim(),
+                          onSaved: (value) => _password = value!.trim(),
                         ),
                         new Padding(
                           padding: const EdgeInsets.only(top: 40.0),
@@ -198,8 +197,7 @@ class _LoginPageState extends State<LoginPage>
   @override
   void onLoginError(String errorTxt) {
     setState(() => _isLoading = false);
-    Toast.show(errorTxt, _ctx,
-        duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+    Toast.show(errorTxt, duration: Toast.lengthShort, gravity: Toast.bottom);
   }
 
   @override

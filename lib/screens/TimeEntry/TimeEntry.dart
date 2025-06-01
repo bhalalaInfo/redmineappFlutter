@@ -1,10 +1,6 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:qr_reader/qr_reader.dart';
 import 'package:redmineapp/screens/TimeEntry/time_entry_screen_presenter.dart';
-import 'package:redmineapp/screens/scanner.dart';
 import 'package:redmineapp/models/ActivityModel.dart';
 import 'package:redmineapp/models/issueModel.dart';
 import 'package:redmineapp/models/projectModel.dart';
@@ -20,20 +16,20 @@ class _TimeEntryState extends State<TimeEntry>
     implements TimeEntryScreenContract {
   final _formKey = new GlobalKey<FormState>();
 
-  Project _selectedProject;
-  Issue _selectedIssue;
-  DateTime _selectedDate;
-  Activity _selectedActivity;
-  String _description;
-  String _displayDate;
-  String _hours;
-  TimeEntryScreenPresenter _presenter;
-  BuildContext _ctx;
+  late Project _selectedProject;
+  late Issue _selectedIssue;
+  late DateTime _selectedDate;
+  late Activity _selectedActivity;
+  late String _description;
+  late String _displayDate;
+  late String _hours;
+  late TimeEntryScreenPresenter _presenter;
+  late BuildContext _ctx;
   int minLength = 18;
 
-  List<Project> _projects;
-  List<Issue> _issues;
-  List<Activity> _activites;
+  late List<Project> _projects;
+  late List<Issue> _issues;
+  late List<Activity> _activites;
 
   _TimeEntryState() {
     _presenter = new TimeEntryScreenPresenter(this);
@@ -42,53 +38,48 @@ class _TimeEntryState extends State<TimeEntry>
   @override
   void initState() {
     super.initState();
-    _selectedProject = null;
-    _selectedIssue = null;
     _selectedDate = DateTime.now();
     _displayDate = 'Select Date';
-    _selectedActivity = null;
     loadMasterData();
   }
 
-  void goToScanner() async {
-    // Navigator.of(_ctx)
-    //     .push(MaterialPageRoute(builder: (BuildContext context) => Scanner()));
-    String data = await QRCodeReader().scan();
-    var obj = json.decode(data);
+  // void goToScanner() async {
+  //   // Navigator.of(_ctx)
+  //   //     .push(MaterialPageRoute(builder: (BuildContext context) => Scanner()));
+  //   String data = await FlutterQrReader();
+  //   var obj = json.decode(data);
+  //   setState(() {
+  //     if (obj["project"] != null)
+  //       _selectedProject =
+  //           _projects.where((p) => p.name == obj["project"]).toList().first;
+
+  //     if (obj["issue"] != null)
+  //       _selectedIssue = _issues
+  //           .where((i) => i.subject.contains(obj["issue"]))
+  //           .toList()
+  //           .first;
+
+  //     if (obj["description"] != null)
+  //       _description = obj["description"].toString();
+
+  //     if (obj["hours"] != null) _hours = obj["hours"].toString();
+  //   });
+  // }
+
+  Future<void> _handleDateSelection() async {
+    final DateTime? picked = await showDatePicker(context: context, firstDate: DateTime(2014, 1, 1), lastDate: DateTime.now());
     setState(() {
-      if (obj["project"] != null)
-        _selectedProject =
-            _projects.where((p) => p.name == obj["project"]).toList().first;
-
-      if (obj["issue"] != null)
-        _selectedIssue = _issues
-            .where((i) => i.subject.contains(obj["issue"]))
-            .toList()
-            .first;
-
-      if (obj["description"] != null)
-        _description = obj["description"].toString();
-
-      if (obj["hours"] != null) _hours = obj["hours"].toString();
-    });
-  }
-
-  void _handleDateSelection() {
-    DatePicker.showDatePicker(_ctx,
-        showTitleActions: true,
-        minTime: DateTime(2014, 1, 1),
-        maxTime: DateTime.now(), onConfirm: (date) {
-      setState(() {
-        _selectedDate = date;
-        _displayDate = '${date.year}-${date.month}-${date.day}';
-      });
+      if(picked!=null) {
+        _selectedDate = picked;
+        _displayDate = '${picked.year}-${picked.month}-${picked.day}';
+      }
     });
   }
 
   void loadMasterData() {
-    _projects = new List<Project>();
-    _issues = new List<Issue>();
-    _activites = new List<Activity>();
+    _projects = new List<Project>.empty();
+    _issues = new List<Issue>.empty();
+    _activites = new List<Activity>.empty();
     _presenter.getProjects();
     _presenter.getActivities();
     // _presenter.getIssues();
@@ -106,7 +97,7 @@ class _TimeEntryState extends State<TimeEntry>
         title: new Text("Time Entry"),
         actions: <Widget>[
           new MaterialButton(
-            onPressed: goToScanner,
+            onPressed: () => {},
             child: Icon(Icons.photo_camera),
             splashColor: Colors.redAccent,
           )
@@ -158,14 +149,10 @@ class _TimeEntryState extends State<TimeEntry>
                           height: 2,
                           color: Colors.tealAccent,
                         ),
-                        onChanged: (Project newValue) {
+                        onChanged: (Project? newValue) {
                           _issues.clear();
                           setState(() {
-                            _selectedProject = null;
-                          });
-                          setState(() {
-                            _selectedProject = newValue;
-                            _selectedIssue = null;
+                            _selectedProject = newValue!;
                           });
                           if (newValue != null)
                             _presenter.getIssues(newValue.id);
@@ -187,9 +174,9 @@ class _TimeEntryState extends State<TimeEntry>
                           height: 2,
                           color: Colors.tealAccent,
                         ),
-                        onChanged: (Issue newValue) {
+                        onChanged: (Issue? newValue) {
                           setState(() {
-                            _selectedIssue = newValue;
+                            _selectedIssue = newValue!;
                           });
                         },
                         items:
@@ -203,7 +190,7 @@ class _TimeEntryState extends State<TimeEntry>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          FlatButton(
+                          TextButton(
                               onPressed: _handleDateSelection,
                               child: Text(_displayDate,
                                   style: TextStyle(color: Colors.white))),
@@ -223,9 +210,9 @@ class _TimeEntryState extends State<TimeEntry>
                               height: 2,
                               color: Colors.tealAccent,
                             ),
-                            onChanged: (Activity newValue) {
+                            onChanged: (Activity? newValue) {
                               setState(() {
-                                _selectedActivity = newValue;
+                                _selectedActivity = newValue!;
                               });
                             },
                             items: _activites.map<DropdownMenuItem<Activity>>(
@@ -294,23 +281,23 @@ class _TimeEntryState extends State<TimeEntry>
 
   @override
   void onErrorIssues(String errorTxt) {
-    Toast.show(errorTxt, _ctx,
-        duration: Toast.LENGTH_SHORT,
-        gravity: Toast.BOTTOM,
+    Toast.show(errorTxt,
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
         backgroundColor: Colors.black12);
   }
 
   @override
   void onErrorProjects(String errorTxt) {
-    Toast.show(errorTxt, _ctx,
-        duration: Toast.LENGTH_SHORT,
-        gravity: Toast.BOTTOM,
+    Toast.show(errorTxt,
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
         backgroundColor: Colors.black12);
   }
 
   @override
   void onLoadIssues(List<Issue> issues) {
-    _issues = new List<Issue>();
+    _issues = new List<Issue>.empty();
     setState(() => _issues = issues);
   }
 
@@ -321,9 +308,9 @@ class _TimeEntryState extends State<TimeEntry>
 
   @override
   void onErrorActivites(String errorTxt) {
-    Toast.show(errorTxt, _ctx,
-        duration: Toast.LENGTH_SHORT,
-        gravity: Toast.BOTTOM,
+    Toast.show(errorTxt,
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
         backgroundColor: Colors.black12);
   }
 
@@ -342,11 +329,10 @@ class _TimeEntryState extends State<TimeEntry>
 
   @override
   void onSaveError(String errorTxt) {
-    Toast.show(errorTxt, _ctx,
-        duration: Toast.LENGTH_LONG,
-        gravity: Toast.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white);
+    Toast.show(errorTxt,
+        duration: Toast.lengthLong,
+        gravity: Toast.center,
+        backgroundColor: Colors.red);
   }
 
   void _handleHoursChange(String value) {

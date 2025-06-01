@@ -27,8 +27,8 @@ class TimeEntryScreenPresenter {
   getProjects() async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
-      var creds = pref.get("Creds");
-      var projects = await api.getProjects(pref.get("BaseUrl"), creds);
+      var creds = pref.getString("Creds")!;
+      var projects = await api.getProjects(pref.getString("BaseUrl")!, creds);
       _view.onLoadProjects(projects);
     } on Exception catch (error) {
       _view.onErrorProjects(error.toString());
@@ -38,8 +38,9 @@ class TimeEntryScreenPresenter {
   getIssues(int projectId) async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
-      var creds = pref.get("Creds");
-      var issues = await api.getIssues(pref.get("BaseUrl"), creds, projectId);
+      var creds = pref.getString("Creds")!;
+      var issues =
+          await api.getIssues(pref.getString("BaseUrl")!, creds, projectId);
       _view.onLoadIssues(issues);
     } on Exception catch (e) {
       _view.onErrorIssues(e.toString());
@@ -49,8 +50,9 @@ class TimeEntryScreenPresenter {
   getActivities() async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
-      var creds = pref.get("Creds");
-      var activities = await api.getActivities(pref.get("BaseUrl"), creds);
+      var creds = pref.getString("Creds")!;
+      var activities =
+          await api.getActivities(pref.getString("BaseUrl")!, creds);
       _view.onLoadActivites(activities);
     } catch (e) {
       _view.onErrorActivites(e.toString());
@@ -61,11 +63,11 @@ class TimeEntryScreenPresenter {
       DateTime date, String desc, String hours) async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
-      var creds = pref.get("Creds");
+      var creds = pref.getString("Creds")!;
 
-      await api.saveEntry(pref.get("BaseUrl"), creds, project.id, issue.id,
-          activity.id, date, desc, double.parse(hours));
-          _view.onEntrySaved();
+      await api.saveEntry(pref.getString("BaseUrl")!, creds, project.id,
+          issue.id, activity.id, date, desc, double.parse(hours));
+      _view.onEntrySaved();
     } catch (e) {
       _view.onSaveError(e.toString());
     }

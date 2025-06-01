@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class Network {
@@ -10,25 +9,26 @@ class Network {
   final JsonDecoder _decoder = new JsonDecoder();
 
   Future<dynamic> get(String url) {
-    return http.get(Uri.encodeFull(url)).then((http.Response response) {
+    return http.get(Uri.parse(url)).then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
 
-      if (statusCode < 200 || statusCode > 400 || json == null) {
+      if (statusCode < 200 || statusCode > 400) {
         throw new Exception("Error while fetching data");
       }
       return _decoder.convert(res);
     });
   }
 
-  Future<dynamic> post(String url, {Map headers, body, encoding}) {
+  Future<dynamic> post(String url,
+      {required Map<String, String> headers, body, encoding}) {
     return http
-        .post(Uri.encodeFull(url), body: body, headers: headers, encoding: encoding)
+        .post(Uri.parse(url), body: body, headers: headers, encoding: encoding)
         .then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
 
-      if (!([200, 201].contains(statusCode)) || response == null) {
+      if (!([200, 201].contains(statusCode))) {
         throw new Exception(res);
       }
       return _decoder.convert(res);
@@ -36,12 +36,14 @@ class Network {
   }
 
   Future<dynamic> getWithHeaders(String url,
-      {@required Map headers, bool isResponse = true}) {
-    return http.get(Uri.encodeFull(url), headers: headers).then((http.Response response) {
+      {required Map<String, String> headers, bool isResponse = true}) {
+    return http
+        .get(Uri.parse(url), headers: headers)
+        .then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
 
-      if (!([200, 201].contains(statusCode)) || response == null) {
+      if (!([200, 201].contains(statusCode))) {
         throw new Exception("Error while fetching data");
       }
       if (isResponse)
